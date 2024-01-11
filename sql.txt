@@ -1,0 +1,32 @@
+ 
+
+alter table customer add primary key (name(20));
+
+
+cek null
+select * from transaksi where Tanggal_Transaksi is null or Nama_Sales is null or Harga_Asli is null or Customer is null or Tipe_Produk is null; 
+delete from transaksi where Tanggal_Transaksi is null or Nama_Sales is null or Harga_Asli is null or Customer is null or Tipe_Produk is null; 
+
+
+relation campaign to transaksi====
+alter table transaksi add column temp date;
+update transaksi set temp = str_to_date(Tanggal_transaksi,'%d/%m/%Y')
+
+alter table campaign add column BT int unique;
+update campaign set bulan = CONCAT(YEAR(temp), '', MONTH(temp));
+alter table transaksi add column BT int unique;
+update transaksi set bulan = CONCAT(YEAR(temp), '', MONTH(temp));
+
+alter table transaksi add column id_campaign INT;
+alter table campaign add column id_camp INT auto_increment Primary key;
+
+update transaksi t join campaign ca on t.BT = ca.BT set t.id_campaign = ca.id_camp;
+alter table transaksi add foreign key (id_campaign) references campaign(id_camp);
+
+Relation transaksi to customer====
+alter table transaksi add column id_cust INT;
+alter table customer add column id_cust INT auto_increment unique;
+
+update transaksi t join customer c on t.Customer = C.Name set t.id_cust = c.id_cust;
+alter table transaksi add foreign key (id_cust) references customer(id_cust);
+
